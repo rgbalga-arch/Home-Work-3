@@ -24,7 +24,7 @@ class OnlyNumbersError(AppError):
 
 
 class NewContact:
-    def new_reg(self):
+    def new_reg(self) -> None:
         data_cont: list[dict] = []
         """Создаём список для хранения существующих контактов."""
 
@@ -45,12 +45,13 @@ class NewContact:
                 break
             except ValueError:
                 print("Введите только цифры.")
+                raise OnlyNumbersError()
 
         for contact in data_cont:
             if phone == contact["phone"]:
                 """Проверяем, нет ли такого номера среди существующих контактов"""
                 print("Такой номер уже существует.")
-                return
+                raise PhoneAlreadyExists()
                 """если номер есть, то останавливаем new_reg"""
 
         comment: str = input("Напишите комментарий ")
