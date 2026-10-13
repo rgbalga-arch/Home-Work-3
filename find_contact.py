@@ -18,30 +18,35 @@ class PhoneNotExist(UserError):
 
 class ContFinder:
     def search_all(self) -> None:
-        data_search: list[dict] = []
-        """создаем пустой список"""
-        with open(contacts_path, "r", encoding="UTF-8") as contacts_file:
-            """открываем файл с контактами для чтения"""
-            for line in contacts_file:
-                """читаем построчно"""
-                data_search.append(json.loads(line))
-                """преобразуем JSON в словарь Python"""
 
-        key: str = input("Введите теелфон для поиска: ").lower()
-        """запрашиваем номер для поиска"""
+        while True:
+            data_search: list[dict] = []
+            """создаем пустой список"""
+            with open(contacts_path, "r", encoding="UTF-8") as contacts_file:
+                """открываем файл с контактами для чтения"""
+                for line in contacts_file:
+                    """читаем построчно"""
+                    data_search.append(json.loads(line))
+                    """преобразуем JSON в словарь Python"""
 
-        found: bool = False
+            try:
+                key: str = input("Введите теелфон для поиска: ").lower()
+                """запрашиваем номер для поиска"""
 
-        for contact in data_search:
-            """перебираем все контакты"""
-            if key in str(contact["phone"]).lower():
-                """преобразуем телефон в строку и смотрим есть ли такое значение"""
-                print(contact)
-                """выводим найденный контакт"""
-                found = True
-                """запоминаем, что контакт был найден"""
+                found: bool = False
 
-        if not found:
-            print("такого номера не существует")
-            raise PhoneNotExist()
-        """если контакт не найден, выводим текст и собственное исключение"""
+                for contact in data_search:
+                    """перебираем все контакты"""
+                    if key in str(contact["phone"]).lower():
+                        """преобразуем телефон в строку и смотрим есть ли такое значение"""
+                        print(contact)
+                        """выводим найденный контакт"""
+                        found = True
+                        """запоминаем, что контакт был найден"""
+
+                if not found:
+                    raise PhoneNotExist("Файл не найден")
+                """если контакт не найден, выводим текст и собственное исключение"""
+            except PhoneNotExist as err:
+                print(err)
+                print(type(err).__name__)

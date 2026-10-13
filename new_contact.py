@@ -41,18 +41,25 @@ class NewContact:
         while True:
             """Повторяем ввод, пока пользователь не введёт число"""
             try:
-                phone = int(input("Введите номер телефона: "))
-                break
-            except ValueError:
-                print("Введите только цифры.")
-                raise OnlyNumbersError()
+                try:
+                    phone = int(input("Введите номер телефона: "))
+                except ValueError:
+                    raise OnlyNumbersError("введите толко цифры")
 
-        for contact in data_cont:
-            if phone == contact["phone"]:
-                """Проверяем, нет ли такого номера среди существующих контактов"""
-                print("Такой номер уже существует.")
-                raise PhoneAlreadyExists()
-                """если номер есть, то останавливаем new_reg"""
+                for contact in data_cont:
+                    if phone == contact["phone"]:
+                        """Проверяем, нет ли такого номера среди существующих контактов"""
+                        raise PhoneAlreadyExists("телефон уже есть")
+                        """если номер есть, то останавливаем new_reg"""
+
+                break
+
+            except OnlyNumbersError as err:
+                print(err)
+                print(type(err).__name__)
+            except PhoneAlreadyExists as err1:
+                print(err1)
+                print(type(err1).__name__)
 
         comment: str = input("Напишите комментарий ")
         """Запрашиваем комментарий к контакту"""
@@ -65,3 +72,5 @@ class NewContact:
             """Открываем файл в режиме добавления нового контакта и добавляем строку"""
             contacts_file.write("\n")
             print("номер добавлен")
+
+

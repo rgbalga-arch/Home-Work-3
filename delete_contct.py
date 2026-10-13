@@ -39,36 +39,44 @@ class DelContact:
                 data_search.append(json.loads(line))
                 """преобразуем JSON строку в словарь Python"""
 
-        key: str = input("Введите теелфон для поиска: ")
-        """запрашиваем телефон у пользователя"""
+        while True:
+            key: str = input("Введите теелфон для поиска: ")
+            """запрашиваем телефон у пользователя"""
 
-        found: bool = False
-        """показывает был ли найден контакт"""
+            found: bool = False
+            """показывает был ли найден контакт"""
 
-        for contact in data_search:
-            """перебираем все контакты"""
-            if key in str(contact["phone"]):
-                """проверяем есть ли введеный номер в номере проверяемой строки"""
-                print(contact)
-                """выводим найденный контакт"""
+            try:
+                for contact in data_search:
+                    """перебираем все контакты"""
+                    if key == str(contact["phone"]):
+                        """проверяем есть ли введеный номер в номере проверяемой строки"""
+                        print(contact)
+                        """выводим найденный контакт"""
 
-                found = True
-                """запоминаем, что контакт был найден"""
+                        found = True
+                        """запоминаем, что контакт был найден"""
 
-                data_search.remove(contact)
-                """удаляем найденный контакт"""
+                        data_search.remove(contact)
+                        """удаляем найденный контакт"""
 
-                with open("contacts.json", "w", encoding="UTF-8") as contacts_file:
-                    """открываем файл в режиме записи"""
+                        with open("contacts.json", "w", encoding="UTF-8") as contacts_file:
+                            """открываем файл в режиме записи"""
 
-                    for contact in data_search:
-                        json.dump(contact, contacts_file, ensure_ascii=False)
-                        contacts_file.write("\n")
-                        """записываем оставшиеся контакты обратно в файл и переходим на новую строку"""
+                            for contact in data_search:
+                                json.dump(contact, contacts_file, ensure_ascii=False)
+                                contacts_file.write("\n")
+                                """записываем оставшиеся контакты обратно в файл и переходим на новую строку"""
 
-                print(data_search)
-                """выводим обновленный список"""
+                        print(data_search)
+                        """выводим обновленный список"""
+                        break
 
-        if not found:
-            print("такого номера не существует")
-            raise PhoneNotExist()
+
+                if not found:
+                    raise PhoneNotExist("телефон не существует")
+                break
+
+            except PhoneNotExist as err:
+                print(err)
+                print(type(err).__name__)

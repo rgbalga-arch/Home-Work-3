@@ -15,22 +15,30 @@ class FileNotExist(AppError):
 class SeeAllList:
     def read_contacts(self) -> None:
         """читает и выводит все контакты из файла"""
-        if contacts_path.exists():
-            """проверяем, есть ли такой файл"""
-            with open(contacts_path, "r", encoding="UTF-8") as contacts_file:
-                """открываем файл в режиме чтения"""
-                data_cont = contacts_file.readlines()
-                """читаем все строки"""
+        # if contacts_path.exists():
+        #     """проверяем, есть ли такой файл"""
+        while True:
+            try:
+                if not contacts_path.exists():
+                    raise FileNotExist("файл не найден")
+                    """если фала нет, то пишем ошибку и показываем исключение"""
 
-                for line in data_cont:
-                    """смотрим каждую строку"""
-                    contact = json.loads(line)
-                    print(json.dumps(contact, indent=4))
-                    """приводим в удобный формат"""
+                with open(contacts_path, "r", encoding="UTF-8") as contacts_file:
+                        """открываем файл в режиме чтения"""
+                        data_cont = contacts_file.readlines()
+                        """читаем все строки"""
 
-        else:
-            print("файл не существует")
-            raise FileNotExist()
-            """если фала нет, то пишем ошибку и показываем исключение"""
+                        for line in data_cont:
+                            """смотрим каждую строку"""
+                            contact = json.loads(line)
+                            print(json.dumps(contact, indent=4))
+                            """приводим в удобный формат"""
+
+                break
+
+            except FileNotExist as err:
+                print(err)
+                print(type(err).__name__)
+                break
 
 
