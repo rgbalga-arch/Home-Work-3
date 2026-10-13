@@ -33,7 +33,6 @@ class DelContact:
 
         with open("contacts.json", "r", encoding="UTF-8") as contacts_file:
             """открываем файл для чтения"""
-
             for line in contacts_file:
                 """читаем построчно"""
                 data_search.append(json.loads(line))
@@ -80,3 +79,4 @@ class DelContact:
             except PhoneNotExist as err:
                 print(err)
                 print(type(err).__name__)
+                break

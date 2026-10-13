@@ -48,7 +48,7 @@ class ContEditor:
             try:
                 for contact in data_search:
                     """Перебираем все контакты"""
-                    if key in str(contact["phone"]):
+                    if key == str(contact["phone"]):
                         """Проверяем, содержится ли введённый номер в номере телефона текущего контакта"""
                         new_name: str = input("Введите новое имя: ")
                         new_phone: str = input("Введите новый телефон: ")
@@ -81,4 +81,5 @@ class ContEditor:
             except PhoneNotExist as err:
                 print(err)
                 print(type(err).__name__)
+                break
 

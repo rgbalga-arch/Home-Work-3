@@ -1,11 +1,14 @@
-from pathlib import Path
 import json
+from pathlib import Path
+
 #путь к файлу с контактами
 contacts_path = Path("contacts.json")
+
 
 class AppError(Exception):
     """базовый класс ошибок приложения"""
     pass
+
 
 class FileNotExist(AppError):
     """ошибка: файл не существует"""
@@ -15,8 +18,6 @@ class FileNotExist(AppError):
 class SeeAllList:
     def read_contacts(self) -> None:
         """читает и выводит все контакты из файла"""
-        # if contacts_path.exists():
-        #     """проверяем, есть ли такой файл"""
         while True:
             try:
                 if not contacts_path.exists():
