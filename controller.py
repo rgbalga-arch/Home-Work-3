@@ -1,91 +1,115 @@
-import json
-from model import Model, PhoneAlreadyExists, WrongCommand, FileNotExist, PhoneNotExist
+from model import Model
+from contact import Contact
 from view import View
+
+from exceptions import FileNotExist, PhoneAlreadyExists, PhoneNotExist, WrongCommand
 
 
 class Controller:
-    def __init__(self):
+    """Управляет взаимодействием справочника и пользователя."""
+
+    def __init__(self) -> None:
         self.model = Model()
         self.view = View()
 
     def new_reg(self) -> None:
+        """Добавляет новый контакт."""
+        phone = self.view.ask_phone()
 
-        while True:
-            phone = self.view.ask_phone()
+        if self.model.phone_exists(phone):
+            err = PhoneAlreadyExists("Такой номер уже существует")
+            self.view.show_message(str(err))
+            print(type(err).__name__)
+            return
 
-            if self.model.phone_exists(phone):
-                self.view.show_message("Такой номер уже есть")
-                continue
+        contact = Contact(
+            name=self.view.ask_name(),
+            phone=phone,
+            comment=self.view.ask_comment(),
+        )
 
-            name = self.view.ask_name()
-            comment = self.view.ask_comment()
+        try:
+            self.model.add_contact(contact)
+        except PhoneAlreadyExists as err:
+            self.view.show_message(str(err))
+            print(type(err).__name__)
+            return
 
-            phone_list = {"name" : name, "phone" : phone, "comment" : comment}
-            try:
-                self.model.add_contact(phone_list)
-            except PhoneAlreadyExists as err:
-                self.view.show_message(str(err))
-                print(type(err).__name__)
-                continue
-
-            self.view.show_message("номер добавлен")
-            break
+        self.view.show_message("Номер добавлен.")
 
     def see_all(self) -> None:
+        """Показывает все контакты."""
         try:
-            self.model.read_contacts()
+            contacts = self.model.get_all()
+            if not contacts:
+                self.view.show_message("Справочник пуст.")
+                return
+
+            for contact in contacts:
+                self.view.show_message(
+                    f"Имя: {contact.name}, "
+                    f"телефон: {contact.phone}, "
+                    f"комментарий: {contact.comment}"
+                )
         except FileNotExist as err:
             self.view.show_message(str(err))
             print(type(err).__name__)
 
     def find_one(self) -> None:
-            phone = self.view.ask_phone()
-
-            try:
-                contact = self.model.find_contact(phone)
-                print(json.dumps(contact, indent=4, ensure_ascii=False))
-
-            except PhoneNotExist as err:
-                self.view.show_message(str(err))
-                print(type(err).__name__)
-
-    def edit_one(self) -> None:
-        """Управляет редактированием контакта."""
+        """Находит контакт по номеру телефона."""
         phone = self.view.ask_phone()
 
-        if not self.model.phone_exists(phone):
-            self.view.show_message("Телефон не найден.")
-            """Сначала проверяем, существует ли контакт"""
+        try:
+            contact = self.model.find_contact(phone)
+            self.view.show_message(
+                f"Имя: {contact.name}, "
+                f"телефон: {contact.phone}, "
+                f"комментарий: {contact.comment}"
+            )
+        except PhoneNotExist as err:
+            self.view.show_message(str(err))
+            print(type(err).__name__)
+
+    def edit_one(self) -> None:
+        """Редактирует существующий контакт."""
+        phone = self.view.ask_phone()
+
+        try:
+            self.model.find_contact(phone)
+        except PhoneNotExist as err:
+            self.view.show_message(str(err))
+            print(type(err).__name__)
             return
 
         new_name = self.view.new_name()
         new_phone = self.view.new_phone()
         new_comment = self.view.new_comment()
-        """Запрашиваем новые данные только после проверки"""
 
         try:
-            self.model.edit_contact(phone,new_name,new_phone,new_comment)
+            self.model.edit_contact(
+                phone,
+                new_name,
+                new_phone,
+                new_comment,
+            )
             self.view.show_message("Контакт сохранён.")
-
-        except PhoneNotExist as err:
+        except (PhoneAlreadyExists, PhoneNotExist) as err:
             self.view.show_message(str(err))
             print(type(err).__name__)
 
     def delete_one(self) -> None:
+        """Удаляет контакт по номеру телефона."""
         phone = self.view.ask_phone()
 
-        if not self.model.phone_exists(phone):
-            self.view.show_message("Телефон не найден.")
-            """Сначала проверяем, существует ли контакт"""
-            return
         try:
             self.model.delete_contact(phone)
-            self.view.show_message("Контакт удален")
+            self.view.show_message("Контакт удалён.")
         except PhoneNotExist as err:
             self.view.show_message(str(err))
             print(type(err).__name__)
 
     def start(self) -> None:
+        """Запускает главное меню приложения."""
         while True:
             action = self.view.menu()
 
@@ -101,8 +125,7 @@ class Controller:
                 elif action == "5":
                     self.delete_one()
                 else:
-                    raise WrongCommand("Неверная команад")
+                    raise WrongCommand("Неверная команда")
             except WrongCommand as err:
                 self.view.show_message(str(err))
                 print(type(err).__name__)
-
