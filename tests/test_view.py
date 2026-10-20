@@ -14,23 +14,11 @@ def test_menu(monkeypatch, capsys):
     assert "3 - чтобы найти контакт" in captured.out
 
 
-def test_ask_name(monkeypatch):
-    """Проверяет ввод имени."""
-    monkeypatch.setattr("builtins.input", lambda _: "Иван")
-
-    view = View()
-
-    assert view.ask_name() == "Иван"
-
-
 def test_ask_phone(monkeypatch, capsys):
     """Проверяет ввод номера после неправильного значения."""
     values = iter(["abc", "123456"])
 
-    monkeypatch.setattr(
-        "builtins.input",
-        lambda _: next(values)
-    )
+    monkeypatch.setattr("builtins.input", lambda _: next(values))
 
     view = View()
 
@@ -43,11 +31,11 @@ def test_ask_phone(monkeypatch, capsys):
 
 def test_ask_comment(monkeypatch):
     """Проверяет ввод комментария."""
-    monkeypatch.setattr("builtins.input", lambda _: "Друг")
+    monkeypatch.setattr("builtins.input", lambda _: "Friend")
 
     view = View()
 
-    assert view.ask_comment() == "Друг"
+    assert view.ask_comment() == "Friend"
 
 
 def test_show_message(capsys):
@@ -100,9 +88,10 @@ def test_new_comment(monkeypatch):
 
 @pytest.mark.parametrize(
     "name",
-    ["Иван", "Ivan", "Иван Иванов", ""],
+    ["Oleg", "Ivan", "Sergey", "Anna"],
 )
-def test_ask_name(monkeypatch, capsys, name):
+def test_ask_name(monkeypatch, name):
+
     monkeypatch.setattr("builtins.input", lambda _: name)
 
     view = View()

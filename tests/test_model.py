@@ -188,6 +188,11 @@ def test_delete_missing_contact(model_and_file):
     """Проверяет ошибку при удалении отсутствующего контакта."""
     model, path = model_and_file
 
+    write_contacts(
+        path,
+        [{"name": "Иван", "phone": 111, "comment": "Работа"}],
+    )
+
     with pytest.raises(PhoneNotExist):
         model.delete_contact(999)
 
@@ -195,6 +200,8 @@ def test_delete_missing_contact(model_and_file):
 def test_delete_contact_without_file(model_and_file):
     """Проверяет удаление из ещё не созданного справочника."""
     model, path = model_and_file
+
+    assert not path.exists()
 
     with pytest.raises(PhoneNotExist):
         model.delete_contact(999)

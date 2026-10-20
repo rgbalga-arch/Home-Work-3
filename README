@@ -1,4 +1,56 @@
 открываем и запускаем файл Main
 далее читаем и следуем инструкции
 
+установка pytest
+1. убеждаемся, что в терминале правильный путь до папки с прокетом. В моем случае это (.venv) PS E:\Синхронизация\1 OTUS\HomeWork 3>
+2. вводим команду python -m pip install pytest
+3. проверяем установку python -m pytest --version должна показаться версия python
 
+
+Тестирование
+1. для тестирования всего проекта команда python -m pytest -v
+2. правильность сохранения контактов python -m pytest tests/test_contact.py::test_create_contact -v
+3. чтение и сохранение файла python -m pytest tests/test_contact_file.py::test_save_and_load_contacts -v
+4. чтение данных из несуществующего файла python -m tests/test_contact_file.py::test_load_missing_file -v
+5. проверяет сохранение контакты в файл в формате JSON Lines python -m pytest tests/test_contact_file.py::test_saved_file_contains_json_lines -v
+6. проверка поиска контакта python -m pytest tests/test_controller.py::test_find_one -v
+7. проверка вывода ошибки и исключения, если телефон не существует python -m pytest tests/test_controller.py::test_find_one_phone_not_exist -v
+8. проверка удаления контакта python -m pytest tests/test_controller.py::test_delete_one -v
+9. проверка вывода ошибки и исключения,если номера телефона не существует python -m pytest tests/test_controller.py::test_delete_one_phone_not_exist -v
+10. проверка просмотра всех контактов python -m pytest tests/test_controller.py::test_see_all -v
+11. проверка вывода ошибки, если справочник пуст python -m pytest tests/test_controller.py::test_see_all_empty_directory -v
+12. проверка изменения контакта python -m pytest tests/test_controller.py::test_edit_one -v
+13. проверка вывода ошибки и исключения,если такого контакта несуществует python -m pytest tests/test_controller.py::test_edit_one_phone_not_exist -v
+14. проверка вывода ошибки и исключения,если такой номер уже есть python -m pytest tests/test_controller.py::test_edit_one_phone_already_exists -v
+15. тест на создание нового контакта python -m pytest tests/test_controller.py::test_new_reg -v
+16. проверка вывода ошибки и исключения при регистрации,если такой номер уже есть python -m pytest tests/test_controller.py::test_new_reg_phone_already_exists -v
+17. проверка вывода ошибки и исключения при регистрации,если такой номер уже есть python -m pytest tests/test_controller.py::test_new_reg_duplicate_in_directory -v
+18. тест на ошибки при выборе неверной команды в меню python -m pytest tests/test_controller.py::test_start_wrong_command -v
+19. тестирование добавление и поиска контактов python -m pytest tests/test_directory.py::test_add_and_find_contact -v
+20. проверка вывода исключения, что телефон уже есть при попытке добавить другой контакт с таким же телефоном python -m pytest tests/test_directory.py::test_add_duplicate_phone -v
+21. проверка вывода исключения при поиске несуществующего телефона python -m pytest tests/test_directory.py::test_find_missing_contact -v
+22. проверка поиска контакта после его изменения python -m pytest tests/test_directory.py::test_edit_contact -v
+23. проверка удаления контакта python -m pytest tests/test_directory.py::test_delete_contact -v
+24. проверка вывода исключения при попытке удалить несуществующий контакт python -m pytest tests/test_directory.py::test_delete_missing_contact -v
+25. проверка вызова контактов в виде списка из временного файла python -m pytest tests/test_model.py::test_get_all -v
+26. получение пустого списка без файла python -m pytest tests/test_model.py::test_get_all_without_file -v
+27. проверяет bool есть такой телефон в списке или нет python -m pytest tests/test_model.py::test_phone_exists -v
+28. проверяет добавление контакта с сохранением предыдущих контактов python -m pytest tests/test_model.py::test_add_contact -v
+29. проверка создания контакта, если файла еще нет. Должен создаться файл и проверить есть ли там контакт python -m pytest tests/test_model.py::test_add_contact_without_file -v
+30. проверяет запрет на создания нового контакта с существующим телефоном python -m pytest tests/test_model.py::test_add_duplicate_phone -v
+31. проверяет есть ли контакт в справочнике или нет python -m pytest tests/test_model.py::test_find_contact -v
+32. вызов исключения ,если телефон не найден python -m pytest tests/test_model.py::test_find_missing_contact -v
+33. поиск контакта по телефону после его редактирования python -m pytest tests/test_model.py::test_edit_contact -v
+34. вывод исключения при попытке изменить несуществующий контакт python -m pytest tests/test_model.py::test_edit_missing_contact -v
+35. вывод исключения ,если пытаемся редактировать контакт с номером, который уже есть в справочнике python -m pytest tests/test_model.py::test_edit_contact_duplicate_phone -v
+36. проверяем, что удаляется только определенный контакт с сохранением остальных python -m pytest tests/test_model.py::test_delete_contact -v
+37. вывод исключения при попытке удалить несуществующий контакт python -m pytest tests/test_model.py::test_delete_missing_contact -v
+38. удаление контакта, если файл не существует python -m pytest tests/test_model.py::test_delete_contact_without_file -v
+39. проверка выбора действия и правильного соответствия пункта меню python -m pytest tests/test_view.py::test_menu -v
+40. проверка ввода имени параметризованным способом python -m pytest tests/test_view.py::test_ask_name -v
+41. проверка ввода ошибки и исключения при попытке ввести str python -m pytest tests/test_view.py::test_ask_phone -v
+42. проверка ввода комента python -m pytest tests/test_view.py::test_ask_comment -v
+43. проверка вывода сообщения python -m pytest tests/test_view.py::test_show_message -v
+44. проверка ввода нового имени python -m pytest tests/test_view.py::test_new_name -v
+45. проверка нового телефона и вывод об ошибке и исключении ,если не цифры python -m pytest tests/test_view.py::test_new_phone -v
+46. проверка ввода нового коментария python -m pytest tests/test_view.py::test_new_comment -v
